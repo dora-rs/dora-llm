@@ -2,3 +2,4 @@ sentence-transformers
 autoawq>=0.1.6
 transformers>=4.35.0
 torch
+dora-rs
