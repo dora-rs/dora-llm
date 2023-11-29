@@ -1,0 +1,29 @@
+nodes:
+  - id: vectordb
+    operator:
+      python: sentence_transformers_op.py
+      inputs:
+        query: jupyter/query
+        append: jupyter/append
+      outputs:
+        - reply_query
+
+  - id: mistral
+    operator:
+      python: mistral_op.py
+      inputs:
+        prompt: jupyter/prompt
+      outputs:
+        - reply_prompt
+
+  - id: jupyter
+    custom:
+      inputs:
+        reply_query: vectordb/reply_query
+        reply_prompt: mistral/reply_prompt
+      outputs:
+        - query
+        - append
+        - prompt
+      source: shell
+      args: jupyter lab
