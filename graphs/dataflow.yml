@@ -1,0 +1,54 @@
+nodes:
+  - id: vectordb
+    operator:
+      python: ../operators/llm/sentence_transformers_op.py
+      inputs:
+        query: jupyter/query
+        append: jupyter/append
+        clear: jupyter/clear
+      outputs:
+        - reply_query
+
+  - id: mistral
+    operator:
+      python: ../operators/llm/mistral_op.py
+      inputs:
+        prompt: jupyter/prompt
+      outputs:
+        - reply_prompt
+
+  - id: jupyter
+    custom:
+      inputs:
+        reply_query: vectordb/reply_query
+        reply_prompt: mistral/reply_prompt
+      outputs:
+        - query
+        - append
+        - prompt
+        - clear
+      source: shell
+      args: cd .. && jupyter lab
+
+  - id: webcam
+    operator:
+      python: ../operators/webcam/webcam.py
+      inputs:
+        tick: dora/timer/millis/50
+      outputs:
+        - image
+
+  - id: object_detection
+    operator:
+      python: ../operators/webcam/object_detection.py
+      inputs:
+        image: webcam/image
+      outputs:
+        - bbox
+
+  - id: plot
+    operator:
+      python: ../operators/webcam/plot.py
+      inputs:
+        image: webcam/image
+        bbox: object_detection/bbox

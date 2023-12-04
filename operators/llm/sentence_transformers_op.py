@@ -7,9 +7,7 @@ import torch
 import pyarrow as pa
 
 
-def search(
-    query_embedding, corpus_embeddings, paths, raw, codes, k=5, file_extension=None
-):
+def search(query_embedding, corpus_embeddings, paths, raw, codes, k=5, file_extension=None):
     # TODO: filtering by file extension
     cos_scores = util.cos_sim(query_embedding, corpus_embeddings)[0]
     top_results = torch.topk(cos_scores, k=min(k, len(cos_scores)), sorted=True)
@@ -54,4 +52,10 @@ class Operator:
                     self.sentences_codes,
                 )
                 send_output("reply_query", pa.array(output))
+            elif dora_event["id"] == "clear":
+                self.sentences_encoding = []
+                self.sentences_raw = []
+                self.sentences_path = []
+                self.sentences_codes = []
+
         return DoraStatus.CONTINUE
