@@ -22,11 +22,13 @@ nodes:
       inputs:
         reply_query: vectordb/reply_query
         reply_prompt: mistral/reply_prompt
+        reply_speech: whisper/reply_speech
       outputs:
         - query
         - append
         - prompt
         - clear
+        - speech
       source: shell
       args: cd .. && jupyter lab
 
@@ -52,3 +54,13 @@ nodes:
       inputs:
         image: webcam/image
         bbox: object_detection/bbox
+        text_whisper: whisper/reply_speech
+  
+  - id: whisper
+    custom:
+      source: shell
+      args: python ../operators/speech/whisper_op.py
+      inputs:
+        speech: jupyter/speech
+      outputs:
+        - reply_speech

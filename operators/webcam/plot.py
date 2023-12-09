@@ -29,6 +29,7 @@ class Operator:
         self.bboxs = []
         self.bounding_box_messages = 0
         self.image_messages = 0
+        self.text_whisper = ""
 
     def on_event(
         self,
@@ -62,11 +63,16 @@ class Operator:
 
             self.bounding_box_messages += 1
 
+        elif dora_input["id"] == "text_whisper" and len(self.image) != 0:
+            self.text_whisper = dora_input["value"][0].as_py()
+
         for bbox in self.bboxs:
             [min_x, min_y, max_x, max_y, confidence, label] = bbox
-            cv2.rectangle(self.image,(int(min_x), int(min_y)),(int(max_x), int(max_y)),(0, 0, 255),2)
+            cv2.rectangle(self.image,(int(min_x), int(min_y)),(int(max_x), int(max_y)),(0, 255, 0),2)
 
-            cv2.putText(self.image,f"{LABELS[int(label)]} {confidence*100:.2f}%",(int(max_x), int(max_y)),font,0.75,(0, 255, 0),2,1)
+            cv2.putText(self.image, LABELS[int(label)] + f", {confidence:0.2f}", (int(max_x), int(max_y)), font, 0.75, (0, 255, 0), 2, 1)
+        
+        cv2.putText(self.image, self.text_whisper, (15, 15), font, 0.6, (20, 20, 20), 2, 1)
 
         if CI != "true":
             cv2.imshow("frame", self.image)
