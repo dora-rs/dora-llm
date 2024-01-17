@@ -8,9 +8,9 @@ nodes:
       outputs:
         - raw_file
 
-  - id: mistral
+  - id: chatgpt
     operator:
-      python: ../operators/demo/mistral_op.py
+      python: ../operators/demo/chatgpt_op.py
       inputs:
         raw_file: vectordb/raw_file
       outputs:

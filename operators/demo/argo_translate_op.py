@@ -5,7 +5,7 @@ import pyarrow as pa
 from dora import DoraStatus
 
 from_code = "en"
-to_code = "zh"
+to_code = "fr"
 
 # Download and install Argos Translate package
 argostranslate.package.update_package_index()
@@ -22,7 +22,7 @@ argostranslate.package.install_from_path(package_to_install.download())
 
 class Operator:
     """
-    Translate content into chinese
+    Translate content into French
     """
 
     def on_event(
@@ -37,5 +37,5 @@ class Operator:
                 from_code,
                 to_code,
             )
-            send_output("translatedText", pa.array([translatedText]))
+            send_output("translated_text", pa.array([translatedText]))
         return DoraStatus.CONTINUE

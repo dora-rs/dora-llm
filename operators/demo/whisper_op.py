@@ -28,14 +28,13 @@ class Operator:
             audio = dora_event["value"].to_numpy()
             audio = whisper.pad_or_trim(audio)
 
-            # make log-Mel spectrogram and move to the same device as the model
-            mel = whisper.log_mel_spectrogram(audio).to(model.device)
+            ## make log-Mel spectrogram and move to the same device as the model
+            # mel = whisper.log_mel_spectrogram(audio).to(model.device)
 
-            # decode the audio
-            options = whisper.DecodingOptions(language="en")
-            result = whisper.decode(model, mel, options)
-
-            text = result.text
-
+            ## decode the audio
+            # options = whisper.DecodingOptions(language="en")
+            # result = whisper.decode(model, mel, options)
+            result = model.transcribe(audio)
+            text = result["text"]
             send_output("text", pa.array([text]))
         return DoraStatus.CONTINUE

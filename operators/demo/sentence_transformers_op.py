@@ -63,8 +63,8 @@ class Operator:
                 output = search(
                     query_embeddings,
                     self.encoding,
-                    self.raw,
                     self.path,
+                    self.raw,
                 )
                 [raw, path, score] = output[0:3]
                 print(
