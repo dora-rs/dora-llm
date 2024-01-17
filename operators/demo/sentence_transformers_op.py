@@ -16,6 +16,8 @@ def get_all_functions(path):
     for root, dirs, files in os.walk(path):
         for file in files:
             if file.endswith(".py"):
+                if file == "utils.py":
+                    continue
                 path = os.path.join(root, file)
                 with open(path, "r", encoding="utf8") as f:
                     ## add file folder to system path
@@ -59,6 +61,12 @@ class Operator:
         if dora_event["type"] == "INPUT":
             if dora_event["id"] == "query":
                 values = dora_event["value"].to_pylist()
+
+                # Only modify code if the word please is used.
+                if not ("please" in values[0] or "Please" in values[0]):
+                    print("Did not use please word")
+                    return DoraStatus.CONTINUE
+
                 query_embeddings = self.model.encode(values)
                 output = search(
                     query_embeddings,

@@ -93,9 +93,11 @@ class Operator:
         cv2.putText(
             self.image, self.text_whisper, (10, 15), font, 0.6, (20, 20, 20), 2, 1
         )
-        cv2.putText(
-            self.image, self.text_whisper, (10, 35), font, 0.6, (20, 20, 20), 2, 1
-        )
+
+        # Uncomment to see translations
+        # cv2.putText(
+        # self.image, self.translated_text, (10, 35), font, 0.6, (20, 20, 20), 2, 1
+        # )
 
         if CI != "true":
             cv2.imshow("frame", self.image)

@@ -21,7 +21,7 @@ nodes:
     operator:
       python: ../operators/demo/microphone_op.py
       inputs:
-        tick: dora/timer/secs/5
+        tick: dora/timer/secs/10
       outputs:
         - audio
 

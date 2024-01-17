@@ -32,9 +32,9 @@ class Operator:
             # mel = whisper.log_mel_spectrogram(audio).to(model.device)
 
             ## decode the audio
-            # options = whisper.DecodingOptions(language="en")
             # result = whisper.decode(model, mel, options)
-            result = model.transcribe(audio)
+            result = model.transcribe(audio, language="en")
             text = result["text"]
+
             send_output("text", pa.array([text]))
         return DoraStatus.CONTINUE

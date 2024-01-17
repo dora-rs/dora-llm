@@ -10,7 +10,7 @@ def ask_gpt(prompt, raw):
         + raw
         + "```\n"
         + prompt
-        + "Format your response by: Showing the whole modified code"
+        + "Format your response by: Showing the whole modified code. No explanation is required. Only code."
     )
 
     response = client.chat.completions.create(
@@ -70,6 +70,7 @@ class Operator:
         if dora_event["type"] == "INPUT":
             input = dora_event["value"][0].as_py()
             response = ask_gpt(input["query"], input["raw"])
+            print("--- Asking chatGPT ", flush=True)
             blocks = extract_command(response)
             print(response, flush=True)
             print(blocks[0], input["path"], flush=True)

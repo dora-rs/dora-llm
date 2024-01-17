@@ -10,6 +10,8 @@ import pyarrow as pa
 
 from dora import DoraStatus
 
+CI = os.environ.get("CI")
+
 CAMERA_WIDTH = 640
 CAMERA_HEIGHT = 480
 CAMERA_INDEX = int(os.getenv("CAMERA_INDEX", 0))
@@ -52,6 +54,8 @@ class Operator:
                     2,
                     1,
                 )
+                if CI != "true":
+                    return DoraStatus.CONTINUE
 
             send_output(
                 "image",
