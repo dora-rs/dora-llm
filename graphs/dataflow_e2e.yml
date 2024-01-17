@@ -1,0 +1,68 @@
+nodes:
+  ## Code Modifier
+  - id: vectordb
+    operator:
+      python: ../operators/demo/sentence_transformers_op.py
+      inputs:
+        query: whisper/text
+      outputs:
+        - raw_file
+
+  - id: mistral
+    operator:
+      python: ../operators/demo/mistral_op.py
+      inputs:
+        raw_file: vectordb/raw_file
+      outputs:
+        - code
+
+  ## Speech to text
+  - id: microphone
+    operator:
+      python: ../operators/demo/microphone_op.py
+      inputs:
+        tick: dora/timer/secs/5
+      outputs:
+        - audio
+
+  - id: whisper
+    operator:
+      python: ../operators/demo/whisper_op.py
+      inputs:
+        audio: microphone/audio
+      outputs:
+        - text
+
+  - id: translator
+    operator:
+      python: ../operators/demo/argo_translate_op.py
+      inputs:
+        text: whisper/text
+      outputs:
+        - translated_text
+
+  ## Webcam
+  - id: webcam
+    operator:
+      python: ../operators/demo/webcam.py
+      inputs:
+        tick: dora/timer/millis/50
+      outputs:
+        - image
+
+  - id: object_detection
+    operator:
+      python: ../operators/demo/object_detection.py
+      inputs:
+        image: webcam/image
+      outputs:
+        - bbox
+
+  - id: plot
+    operator:
+      python: ../operators/demo/plot.py
+      inputs:
+        image: webcam/image
+        bbox: object_detection/bbox
+        text: whisper/text
+        translated_text: translator/translated_text
