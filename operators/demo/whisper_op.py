@@ -36,5 +36,5 @@ class Operator:
             result = model.transcribe(audio, language="en")
             text = result["text"]
 
-            send_output("text", pa.array([text]))
+            send_output("text", pa.array([text]), dora_event["metadata"])
         return DoraStatus.CONTINUE
