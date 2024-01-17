@@ -69,8 +69,8 @@ class Operator:
     ) -> DoraStatus:
         if dora_event["type"] == "INPUT":
             input = dora_event["value"][0].as_py()
-            response = ask_gpt(input["query"], input["raw"])
             print("--- Asking chatGPT ", flush=True)
+            response = ask_gpt(input["query"], input["raw"])
             blocks = extract_command(response)
             print(response, flush=True)
             print(blocks[0], input["path"], flush=True)

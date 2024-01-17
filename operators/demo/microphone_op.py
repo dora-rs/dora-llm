@@ -42,5 +42,5 @@ class Operator:
 
             audio_data = audio_data.ravel().astype(np.float32) / 32768.0
             if len(audio_data) > 0:
-                send_output("audio", pa.array(audio_data))
+                send_output("audio", pa.array(audio_data), dora_event["metadata"])
         return DoraStatus.CONTINUE

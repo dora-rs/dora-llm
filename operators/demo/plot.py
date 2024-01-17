@@ -18,6 +18,10 @@ CAMERA_HEIGHT = 480
 
 font = cv2.FONT_HERSHEY_SIMPLEX
 
+# Index corresponding to "chair" in the LABELS array.
+# Adjust this index to match the correct label in your LABELS array.
+CHAIR_LABEL_INDEX = LABELS.index("chair")
+
 
 class Operator:
     """
@@ -60,7 +64,9 @@ class Operator:
 
         elif dora_input["id"] == "bbox" and len(self.image) != 0:
             bboxs = dora_input["value"].to_numpy()
+            # Filter bounding boxes to only include chairs
             self.bboxs = np.reshape(bboxs, (-1, 6))
+            self.bboxs = [bbox for bbox in self.bboxs if int(bbox[5]) == CHAIR_LABEL_INDEX]
 
             self.bounding_box_messages += 1
 
@@ -71,24 +77,25 @@ class Operator:
 
         for bbox in self.bboxs:
             [min_x, min_y, max_x, max_y, confidence, label] = bbox
-            cv2.rectangle(
-                self.image,
-                (int(min_x), int(min_y)),
-                (int(max_x), int(max_y)),
-                (0, 255, 0),
-                2,
-            )
+            if int(label) == CHAIR_LABEL_INDEX:
+                cv2.rectangle(
+                    self.image,
+                    (int(min_x), int(min_y)),
+                    (int(max_x), int(max_y)),
+                    (0, 255, 0),
+                    2,
+                )
 
-            cv2.putText(
-                self.image,
-                LABELS[int(label)] + f", {confidence:0.2f}",
-                (int(max_x), int(max_y)),
-                font,
-                0.75,
-                (0, 255, 0),
-                2,
-                1,
-            )
+                cv2.putText(
+                    self.image,
+                    LABELS[int(label)] + f", {confidence:0.2f}",
+                    (int(max_x), int(max_y)),
+                    font,
+                    0.75,
+                    (0, 255, 0),
+                    2,
+                    1,
+                )
 
         cv2.putText(
             self.image, self.text_whisper, (10, 15), font, 0.6, (20, 20, 20), 2, 1

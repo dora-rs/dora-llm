@@ -84,6 +84,7 @@ class Operator:
                 send_output(
                     "raw_file",
                     pa.array([{"raw": raw, "path": path, "query": values[0]}]),
+                    dora_event["metadata"],
                 )
 
         return DoraStatus.CONTINUE

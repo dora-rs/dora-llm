@@ -37,5 +37,11 @@ class Operator:
                 from_code,
                 to_code,
             )
-            send_output("translated_text", pa.array([translatedText]))
+            send_output(
+                "translated_text",
+                pa.array(
+                    [translatedText],
+                ),
+                dora_event["metadata"],
+            )
         return DoraStatus.CONTINUE
