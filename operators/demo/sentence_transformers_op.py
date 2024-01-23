@@ -8,6 +8,16 @@ import inspect
 import torch
 import pyarrow as pa
 
+SHOULD_NOT_BE_INCLUDED = [
+    "utils.py",
+    "sentence_transformers_op.py",
+    "chatgpt_op.py",
+    "whisper_op.py",
+    "microphone_op.py",
+    "object_detection_op.py",
+    "webcam.py",
+]
+
 
 ## Get all python files path in given directory
 def get_all_functions(path):
@@ -16,7 +26,7 @@ def get_all_functions(path):
     for root, dirs, files in os.walk(path):
         for file in files:
             if file.endswith(".py"):
-                if file == "utils.py":
+                if file in SHOULD_NOT_BE_INCLUDED:
                     continue
                 path = os.path.join(root, file)
                 with open(path, "r", encoding="utf8") as f:
