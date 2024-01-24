@@ -1,40 +1,50 @@
 nodes:
+  ## Code Modifier
   - id: vectordb
     operator:
-      python: ../operators/llm/sentence_transformers_op.py
+      python: ../operators/demo/sentence_transformers_op.py
       inputs:
-        query: jupyter/query
-        append: jupyter/append
-        clear: jupyter/clear
+        query: whisper/text
       outputs:
-        - reply_query
+        - raw_file
 
-  - id: mistral
+  - id: chatgpt
     operator:
-      python: ../operators/llm/mistral_op.py
+      python: ../operators/demo/chatgpt_op.py
       inputs:
-        prompt: jupyter/prompt
+        raw_file: vectordb/raw_file
       outputs:
-        - reply_prompt
+        - code
 
-  - id: jupyter
-    custom:
+  ## Speech to text
+  - id: microphone
+    operator:
+      python: ../operators/demo/microphone_op.py
       inputs:
-        reply_query: vectordb/reply_query
-        reply_prompt: mistral/reply_prompt
-        reply_speech: whisper/reply_speech
+        tick: dora/timer/secs/10
       outputs:
-        - query
-        - append
-        - prompt
-        - clear
-        - speech
-      source: shell
-      args: cd .. && jupyter lab
+        - audio
 
+  - id: whisper
+    operator:
+      python: ../operators/demo/whisper_op.py
+      inputs:
+        audio: microphone/audio
+      outputs:
+        - text
+
+  - id: translator
+    operator:
+      python: ../operators/demo/argo_translate_op.py
+      inputs:
+        text: whisper/text
+      outputs:
+        - translated_text
+
+  ## Webcam
   - id: webcam
     operator:
-      python: ../operators/webcam/webcam.py
+      python: ../operators/demo/webcam.py
       inputs:
         tick: dora/timer/millis/50
       outputs:
@@ -42,7 +52,7 @@ nodes:
 
   - id: object_detection
     operator:
-      python: ../operators/webcam/object_detection.py
+      python: ../operators/demo/object_detection.py
       inputs:
         image: webcam/image
       outputs:
@@ -50,17 +60,9 @@ nodes:
 
   - id: plot
     operator:
-      python: ../operators/webcam/plot.py
+      python: ../operators/demo/plot.py
       inputs:
         image: webcam/image
         bbox: object_detection/bbox
-        text_whisper: whisper/reply_speech
-  
-  - id: whisper
-    custom:
-      source: shell
-      args: python ../operators/speech/whisper_op.py
-      inputs:
-        speech: jupyter/speech
-      outputs:
-        - reply_speech
+        text: whisper/text
+        translated_text: translator/translated_text

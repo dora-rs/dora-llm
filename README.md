@@ -12,7 +12,7 @@ pip install -r requirements.txt
 
 ```
 dora up
-dora start dataflow.yml --attach
+dora start graphs/dataflow.yml --attach --hot-reload
 ```
 
 Ctrl-C to stop the dataflow

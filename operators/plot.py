@@ -29,6 +29,8 @@ class Operator:
         self.bboxs = []
         self.bounding_box_messages = 0
         self.image_messages = 0
+        self.text_whisper = ""
+        self.translated_text = ""
 
     def on_event(
         self,
@@ -51,6 +53,7 @@ class Operator:
                 .reshape((CAMERA_HEIGHT, CAMERA_WIDTH, 3))
                 .copy()
             )  # copy the image because we want to modify it below
+
             self.image = frame
 
             self.image_messages += 1
@@ -61,13 +64,48 @@ class Operator:
             self.bboxs = np.reshape(bboxs, (-1, 6))
 
             self.bounding_box_messages += 1
-            print("received " + str(self.bounding_box_messages) + " bounding boxes")
+
+        elif dora_input["id"] == "text" and len(self.image) != 0:
+            self.text_whisper = dora_input["value"][0].as_py()
+        elif dora_input["id"] == "translated_text" and len(self.image) != 0:
+            self.translated_text = dora_input["value"][0].as_py()
 
         for bbox in self.bboxs:
             [min_x, min_y, max_x, max_y, confidence, label] = bbox
-            cv2.rectangle(self.image,(int(min_x), int(min_y)),(int(max_x), int(max_y)),(0, 0, 255),2)
+            # Modify the bounding box color according to Confidence
+            if confidence > 0.8:
+                color = (0, 255, 0)
+            elif confidence > 0.5:
+                color = (255, 255, 0)
+            else:
+                color = (0, 0, 255)
+            cv2.rectangle(
+                self.image,
+                (int(min_x), int(min_y)),
+                (int(max_x), int(max_y)),
+                color,
+                2,
+            )
 
-            cv2.putText(self.image,LABELS[int(label)] + f", {confidence:0.2f}",(int(max_x), int(max_y)),font,0.75,(0, 255, 0),2,1)
+            cv2.putText(
+                self.image,
+                LABELS[int(label)] + f", {confidence:0.2f}",
+                (int(max_x), int(max_y)),
+                font,
+                0.75,
+                color,
+                2,
+                1,
+            )
+
+        cv2.putText(
+            self.image, self.text_whisper, (10, 15), font, 0.6, (20, 20, 20), 2, 1
+        )
+
+        # Uncomment to see translations
+        cv2.putText(
+            self.image, self.translated_text, (10, 35), font, 0.6, (20, 20, 20), 2, 1
+        )
 
         if CI != "true":
             cv2.imshow("frame", self.image)
