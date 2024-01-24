@@ -2,7 +2,7 @@ nodes:
   ## Code Modifier
   - id: vectordb
     operator:
-      python: ../operators/demo/sentence_transformers_op.py
+      python: ../operators/sentence_transformers_op.py
       inputs:
         query: whisper/text
       outputs:
@@ -10,7 +10,7 @@ nodes:
 
   - id: chatgpt
     operator:
-      python: ../operators/demo/chatgpt_op.py
+      python: ../operators/chatgpt_op.py
       inputs:
         raw_file: vectordb/raw_file
       outputs:
@@ -19,7 +19,7 @@ nodes:
   ## Speech to text
   - id: microphone
     operator:
-      python: ../operators/demo/microphone_op.py
+      python: ../operators/microphone_op.py
       inputs:
         tick: dora/timer/secs/10
       outputs:
@@ -27,7 +27,7 @@ nodes:
 
   - id: whisper
     operator:
-      python: ../operators/demo/whisper_op.py
+      python: ../operators/whisper_op.py
       inputs:
         audio: microphone/audio
       outputs:
@@ -35,7 +35,7 @@ nodes:
 
   - id: translator
     operator:
-      python: ../operators/demo/argo_translate_op.py
+      python: ../operators/argo_translate_op.py
       inputs:
         text: whisper/text
       outputs:
@@ -44,7 +44,7 @@ nodes:
   ## Webcam
   - id: webcam
     operator:
-      python: ../operators/demo/webcam.py
+      python: ../operators/webcam.py
       inputs:
         tick: dora/timer/millis/50
       outputs:
@@ -52,7 +52,7 @@ nodes:
 
   - id: object_detection
     operator:
-      python: ../operators/demo/object_detection.py
+      python: ../operators/object_detection.py
       inputs:
         image: webcam/image
       outputs:
@@ -60,7 +60,7 @@ nodes:
 
   - id: plot
     operator:
-      python: ../operators/demo/plot.py
+      python: ../operators/plot.py
       inputs:
         image: webcam/image
         bbox: object_detection/bbox
